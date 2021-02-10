@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
+import { green, grey } from '@material-ui/core/colors';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import TableContainer from '@material-ui/core/TableContainer';
+import Paper from '@material-ui/core/Paper';
 import {
   Box,
   Card,
@@ -13,14 +16,32 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  makeStyles
+  makeStyles,
+  Button
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
   avatar: {
     marginRight: theme.spacing(2)
-  }
+  },
+  importButton: {
+    marginTop: theme.spacing(0.2),
+    marginBottom: theme.spacing(0.2),
+    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(0.2),
+    color: theme.palette.getContrastText(green[500]),
+    backgroundColor: green[500],
+  },
+  exportButton: {
+    marginTop: theme.spacing(0.2),
+    marginBottom: theme.spacing(0.2),
+    marginRight: theme.spacing(0.5),
+    marginLeft: theme.spacing(0.2),
+    color: theme.palette.getContrastText(grey[500]),
+    backgroundColor: grey[500],
+  },
+
 }));
 
 const Results = ({ className, modules, ...rest }) => {
@@ -75,57 +96,70 @@ const Results = ({ className, modules, ...rest }) => {
       {...rest}
     >
       <PerfectScrollbar>
-        <Box minWidth={1050}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedModuleIds.length === modules.length}
-                    color="primary"
-                    indeterminate={
-                      selectedModuleIds.length > 0
-                      && selectedModuleIds.length < modules.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell>
-                  Name
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {modules.slice(0, limit).map((module) => (
-                <TableRow
-                  hover
-                  key={module.ids}
-                  selected={selectedModuleIds.indexOf(module.ids) !== -1}
-                >
+        <Box minWidth={100} maxHeight={100}>
+          <Box
+            display="flex"
+            justifyContent="flex-end"
+          >
+            <Button size="small" className={classes.importButton}>
+              Import
+            </Button>
+            <Button size="small" className={classes.exportButton}>
+              Export
+            </Button>
+          </Box>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedModuleIds.indexOf(module.ids) !== -1}
-                      onChange={(event) => handleSelectOne(event, module.ids)}
-                      value="true"
+                      checked={selectedModuleIds.length === modules.length}
+                      color="primary"
+                      indeterminate={
+                        selectedModuleIds.length > 0
+                        && selectedModuleIds.length < modules.length
+                      }
+                      onChange={handleSelectAll}
                     />
                   </TableCell>
                   <TableCell>
-                    <Box
-                      alignItems="center"
-                      display="flex"
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {module.moduleName}
-                      </Typography>
-                    </Box>
+                    Name
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {modules.slice(0, limit).map((module) => (
+                  <TableRow
+                    hover
+                    key={module.ids}
+                    selected={selectedModuleIds.indexOf(module.ids) !== -1}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={selectedModuleIds.indexOf(module.ids) !== -1}
+                        onChange={(event) => handleSelectOne(event, module.ids)}
+                        value="true"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Box
+                        alignItems="center"
+                        display="flex"
+                      >
+                        <Typography
+                          color="textPrimary"
+                          variant="body1"
+                        >
+                          {module.moduleName}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Box>
       </PerfectScrollbar>
       <TablePagination
